@@ -88,15 +88,7 @@ class TestAPIs(unittest.TestCase):
     def test_get_community_list(self):
         community_list_url = f"{self.base_url}/im/api/dapp/community/list"
         community_list_headers = self.get_user_info_headers()
-        data = {
-            "tag": "",
-            "communityType": 3,
-            "pageNum": 1,
-            "pageSize": 100,
-            "orderBy": 1,
-            "prePageLastFollowerNum": "",
-            "prePageLastId": ""
-        }
+        data = {"tag":"","communityType":2,"pageNum":1,"pageSize":100,"orderBy":1,"prePageLastFollowerNum":"","prePageLastId":""}
 
         response = requests.post(community_list_url, headers=community_list_headers, json=data)
 
