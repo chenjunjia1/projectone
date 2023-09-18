@@ -68,7 +68,7 @@ class TestAPIs(unittest.TestCase):
         }
 
     @allure.feature("API Test")
-    @allure.story("测试获取用户信息")
+    @allure.story("获取用户信息")
     def test_get_user_info(self):
         user_info_url = f"{self.base_url}/im/api/user/info"
         user_info_headers = self.get_user_info_headers()
@@ -84,7 +84,7 @@ class TestAPIs(unittest.TestCase):
             self.fail(f"获取用户信息失败: {response.status_code}")
 
     @allure.feature("API Test")
-    @allure.story("测试获取社区列表")
+    @allure.story("获取社区列表")
     def test_get_community_list(self):
         community_list_url = f"{self.base_url}/im/api/dapp/community/list"
         community_list_headers = self.get_user_info_headers()
@@ -97,9 +97,38 @@ class TestAPIs(unittest.TestCase):
             allure.attach("社区列表响应", json.dumps(community_list_result, indent=4), allure.attachment_type.JSON)  # 添加 Allure 报告附件
             print("社区列表:")
             print(json.dumps(community_list_result, indent=4))
-            self.assertEqual(community_list_result['code'], 0)  # 检查响应码是否为0
+            self.assertEqual(community_list_result['code'], 0)
         else:
             self.fail(f"获取社区列表失败: {response.status_code}")
+
+    @allure.feature("API 测试")
+    @allure.story("创建社区")
+    def test_create_community(self):
+        create_community_url = f"{self.base_url}/im/api/dapp/community/add"
+        create_community_headers = self.get_user_info_headers()
+
+        # 循环创建五个社区
+        for i in range(1, 6):
+            data = {
+                "logoPath": "https://xplus-img.trytryc.com/img/2023-09-18/0437bf5c-7c0c-4408-942f-7aca4acca0ed.jpeg",
+                "backgroundPath": "https://xplus-img.trytryc.com/img/2023-05-19/53b2e56e-d6ab-4539-bccc-f54d256e6b45.png",
+                "bio": f"10000{i}",
+                "name": f"10000{i}",
+                "tags": ["NFT", "GameFi", "DeFi"],
+                "typeCode": 1
+            }
+
+            response = requests.post(create_community_url, headers=create_community_headers, json=data)
+
+            if response.status_code == 200:
+                community_creation_result = response.json()
+                allure.attach("社区创建响应", json.dumps(community_creation_result, indent=4),
+                              allure.attachment_type.JSON)  # 添加 Allure 报告附件
+                print(f"社区{i}创建结果:")
+                print(json.dumps(community_creation_result, indent=4))
+                self.assertEqual(community_creation_result['code'], 0)
+            else:
+                self.fail(f"社区{i}创建失败: {response.status_code}")
 
 
 if __name__ == "__main__":
